@@ -341,3 +341,47 @@
   - Target 指定注解可以在哪些地方使用 
   - Documented 指定该注解是否会在 javadoc 体现 
   - Inherited 父类使用，子类会继承父类注解
+
+## 常用类
+
+### 包装类
+
+#### Integer
+
+- Object obj1 = true?new Integer(1):nwe Double(2.0) 输出为1.0，因为最高精度为double，三元运算符是一个整体，会自动转换。
+- Integer和String的转换
+  - Integer转String Integer i = 100
+    - 方式 1 String str1 = i + ""; 方式 2 String str2 = i.toString(); 方式 3 String str3 = String.valueOf(i)
+  - String转Integer
+    - String str4 = "12345"; Integer i2 = Integer.parseInt(str4);//使用到自动装箱 Integer i3 = new Integer(str4);//构造器
+- Integer x = i;如果 i 在 IntegerCache.low(-128)~IntegerCache.high(127),就直接从数组返回 ，如果不在 -128~127,就直接 new Integer(i)
+- 只有有基本数据类型，判断的是值是否相同,Integer i11=127; int i12=127 i1==i2;
+
+#### String
+
+- 实现Serializable接口 意味着可以串行化:可以在网络传输
+- 方式一:直接赋值 String s = "hsp"; 先从常量池查看是否有"hsp"数据空间,如果有，直接指向;如果没有则重新创建，然后指向。S最终指向的是常量池的空间地址
+- 方式二:调用构造器 String s2 =new String("hsp");先在堆中创建空间，里面维护了value属性，指向常量池的hsp空间。如果常量池没有"hsp",重新创建,如果有，直接通过value指向。最终指向的是堆中的空间地址。
+- String a = "hello" +"abc" 只创建了1个对象.
+- p581重要规则，String c1 = "ab" + "cd";常量相加，看的是池。String c1 =a+b;变量相加,是在堆中
+- p582综合分析
+- split函数 在对字符串进行分割时，如果有特殊字符，需要加入转义符\ 如"\\"
+- compareTo 比较两个字符串的大小，如果前者大，则返回正数，后者大，则返回负数，如果相等，返回 0
+  - (1) 如果长度相同，并且每个字符也相同，就返回 0 
+  - (2) 如果长度相同或者不相同，但是在进行比较时，可以区分大小 就返回 if (c1 != c2) { // return c1 - c2; // } 
+  - (3) 如果前面的部分都相同，就返回 str1.len -str2.len
+- String保存的是字符串常量，里面的值不能更改，每次String类的更新实际上就是更改地址，效率较低.StringBuffer保存的是字符串变量，里面的值可以更改，每次StringBuffer的更新实际上可以更新内容，不用每次更新地址，效率较高.
+- String->StringBuffer 构造器，append() StringBuffer->String 构造器，toString()
+- String str = null    StringBuffer sb = new StringBuffer(str);不可以 sb.append(str);可以
+- StringBuilder一个可变的字符序列。此类提供一个与StringBuffer 兼容的API,但不保证同步(StringBuilder 不是线程安全)。该类被设计用作 StringBuffer的一个简易替换,用在字符串缓冲区被单个线程使用的时候。如果可能，建议优先采用该类因为在大多数实现中，它比 StringBuffer 要快。
+- StringBuilder 的方法，没有做互斥的处理,即没有 synchronized 关键字,因此在单线程的情况下使用  StringBuilder
+- string s="a";//创建了一个字符串
+  s += "b";//实际上原来的"a"字符串对象已经丢弃了，现在又产生了一个字符串s+"b”(也就是"ab")。如果多次执行这些改变串内容的操作，会导致大量副本字符串对象存留在内存中，降低效率。如果这样的操作放到循环中，会极大影响程序的性能=>结论:如果我们对String做大量修改,不要使用String
+- 使用的原则,结论:
+  - 如果字符串存在大量的修改操作，一般使用 StringBuffer 或StringBuilder
+  - 如果字符串存在大量的修改操作，并在单线程的情况,使用 StringBuilder
+  - 如果字符串存在大量的修改操作，并在多线程的情况,使用StringBuffer
+  - 如果我们字符串很少修改，被多个对象引用,使用String, 比如配置信息等
+
+#### Math
+
